@@ -46,18 +46,61 @@ packer.startup(function(use)
   use 'nvim-lua/popup.nvim'   -- An implementation of the Popup API from vim in Neovim
   use 'nvim-lua/plenary.nvim' -- Useful lua functions used by lots of plugins
   use 'nvim-telescope/telescope.nvim' -- Fuzzy finder
+  use 'cljoly/telescope-repo.nvim'  -- Uses telescope to search file system for git repos
   use 'tssm/fairyfloss.vim'   -- Fairyfloss color scheme
   use 'kyazdani42/blue-moon'  -- Blue Moon color scheme
   use 'kyazdani42/nvim-web-devicons' -- File icons
-  use 'kyazdani42/nvim-tree.lua'    -- file explorer
   use 'tpope/vim-surround'     -- Vim surrond
-  use 'tpope/vim-fugitive'    -- Git explorer
-  use 'lewis6991/gitsigns.nvim' -- Git status in sidebar
-  use 'TimUntersberger/neogit'     -- Git something
+
   use 'b3nj5m1n/kommentary'   -- Comment out text
   use 'jiangmiao/auto-pairs'     -- Auto insert/delete brackets/parens/qoutes
+  use 'ryanoasis/vim-devicons'
+  use 'kdheepak/lazygit.nvim'
+  use 'arcticicestudio/nord-vim'
+  use {
+    'kyazdani42/nvim-tree.lua',
+    requires = {
+      'kyazdani42/nvim-web-devicons', -- optional, for file icon
+    },
+    config = function() require'nvim-tree'.setup {
+      hijack_cursor = true,
+      open_on_setup = true,
+      open_on_tab = true,
+      update_focused_file = {
+        enable = true,
+        update_cwd = true
+      },
+      diagnostics = {
+        enable = false,
+      },
+      view = {
+        width = 30,
+        side = 'left',
+        auto_resize = true,
+        number = false,
+      },
+    } end
+  }
 
+  use {
+    'lewis6991/gitsigns.nvim',
+    requires = {
+      'nvim-lua/plenary.nvim'
+    },
+    config = function()
+      require'gitsigns'.setup()
+    end
+  }
 
+  use {
+    'akinsho/toggleterm.nvim',
+    config = function() require'toggleterm'.setup {
+      open_mapping = [[<A-\>]],
+      direction = 'horizontal',
+      close_on_exit = true,
+      start_in_insert = true,
+    } end
+  }
 
   -- Automatically set up your configuration after cloning packer.nvim
   -- Put this at the end after al plugins

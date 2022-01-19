@@ -25,6 +25,7 @@ keymap("n", "<A-h>", "<C-w>h", opts)
 keymap("n", "<A-j>", "<C-w>j", opts)
 keymap("n", "<A-k>", "<C-w>k", opts)
 keymap("n", "<A-l>", "<C-w>l", opts)
+keymap("n", ",,", "<C-^>", opts)        -- Switch back to last buffer
 
 -- Resize with arrows --
 keymap("n", "<A-Up>", ":resize +2<CR>", opts)
@@ -33,7 +34,17 @@ keymap("n", "<A-Left>", ":vertical resize -2<CR>", opts)
 keymap("n", "<A-Right>", ":resize +2<CR>", opts)
 
 -- Escape --
-keymap("n", "<ESC>", ":noh<CR>", opts)
+keymap("n", "<ESC>", ":noh<CR>", term_opts)
+
+-- Telescope --
+keymap("n", "<leader>ff", ":Telescope find_files<cr>", opts)
+keymap("n", "<leader>fg", ":Telescope repo list<cr>", opts)
+keymap("n", "<leader>fb", ":Telescope buffers<cr>", opts)
+keymap("n", "<leader>fh", ":Telescope help_tags<cr>", opts)
+
+-- Nvim tree --
+keymap("n", "<leader>t", ":NvimTreeToggle<CR>", opts)
+
 
 -- Visual Mode --
 -- Stay in indent mode when tabbing --
@@ -61,5 +72,6 @@ keymap("t", "<A-h>", "<C-\\><C-n><C-w>h", term_opts)
 keymap("t", "<A-j>", "<C-\\><C-n><C-w>j", term_opts)
 keymap("t", "<A-k>", "<C-\\><C-n><C-w>k", term_opts)
 keymap("t", "<A-l>", "<C-\\><C-n><C-w>l", term_opts)
-
+keymap("t", "<ESC>", "<C-\\><C-n>", term_opts)
+keymap("t", "jj", "<C-\\><C-n>", term_opts)
 
