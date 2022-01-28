@@ -84,6 +84,9 @@ source $ZSH/oh-my-zsh.sh
 
 # User configuration
 
+# Set neovim as default editor
+export EDITOR="nvim"
+
 # export MANPATH="/usr/local/man:$MANPATH"
 
 # You may need to manually set your language environment
@@ -117,8 +120,11 @@ alias brew="arch -x86_64 brew"
 alias rbenv="arch -x86_64 rbenv"
 alias brewARM="arch -arm64 brew"
 
-# Set neovim as default editor
-export EDITOR="nvim"
+# Git aliases
+alias gfu='git commit --fixup'
+
+# Include Z script to quickly hop around directories
+. /usr/local/bin/z.sh
 
 #####################################
 #  	    Pure ZSH Prompt             #
@@ -157,3 +163,8 @@ export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
 
 # CTRL-R to fuzzy search through shell history
 export FZF_ALT_C_COMMAND="fd -t d . $HOME"
+
+# Move vim generated files from cwd
+set backupdir=.backup/,~/.backup/,/tmp//
+set directory=.swp/,~/.swp/,/tmp//
+set undodir=.undo/,~/.undo/,/tmp//
