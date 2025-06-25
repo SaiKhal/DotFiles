@@ -70,7 +70,9 @@ alias t='tmux'                                                     # Quick tmux 
 alias config='/usr/bin/git --git-dir=$HOME/.cfg/ --work-tree=$HOME'  # Dotfiles management
 
 # Apple Silicon Mac - force specific architectures
-alias brew="arch -arm64 brew"      # Use ARM64 Homebrew
+if [[ "$(uname -s)" == "Darwin" && "$(uname -m)" == "arm64" ]]; then
+  alias brew="arch -arm64 brew"      # Use ARM64 Homebrew
+fi
 alias rben="arch -x86_64 rbenv"    # Use x86_64 rbenv if needed
 
 # Quick navigation to Obsidian notes
