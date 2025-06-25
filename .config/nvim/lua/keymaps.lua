@@ -33,6 +33,10 @@ keymap("n", "<A-Down>", ":resize -2<CR>", opts)
 keymap("n", "<A-Left>", ":vertical resize -2<CR>", opts)
 keymap("n", "<A-Right>", ":resize +2<CR>", opts)
 
+-- Move to start/end of line easily
+keymap("n", "H", "^", opts)
+keymap("n", "L", "$", opts)
+
 -- Escape --
 keymap("n", "<ESC>", ":noh<CR>", term_opts)
 
@@ -63,7 +67,7 @@ keymap("x", "K", ":move '<-2<CR>gv-gv", opts)
 
 -- Insert Mode --
 -- Quicker ESC --
-keymap("i", "jj", "<ESC>", opts)
+keymap("i", "jk", "<ESC>", opts)
 
 
 -- Terminal Mode --

@@ -46,6 +46,3 @@ end
 cmd [[au BufWritePre * :%s/\s\+$//e]]
 -- Dont auto comment new lines
 cmd [[au BufEnter * set fo-=c fo-=r fo-=o]]
-
--- Colorscheme
-cmd [[colorscheme nord]]
