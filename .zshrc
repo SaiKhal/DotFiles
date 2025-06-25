@@ -11,7 +11,8 @@ source "${ZINIT_HOME}/zinit.zsh"
 # Load plugins with turbo loading for better performance
 zinit wait lucid for \
   OMZL::git.zsh \
-  OMZP::git
+  OMZP::git \
+  OMZP::common-aliases
 
 # Additional completions (loaded immediately)
 zinit ice wait"0" lucid blockf
@@ -20,6 +21,13 @@ zinit light zsh-users/zsh-completions
 # Command autosuggestions (loaded with slight delay)
 zinit ice wait"0" lucid atload"_zsh_autosuggest_start"
 zinit light zsh-users/zsh-autosuggestions
+
+# History substring search (load before syntax highlighting)
+zinit ice wait"0" lucid atload"
+  bindkey '^[[A' history-substring-search-up
+  bindkey '^[[B' history-substring-search-down
+"
+zinit light zsh-users/zsh-history-substring-search
 
 # Syntax highlighting (must load last, with delay)
 zinit ice wait"0" lucid
@@ -64,9 +72,15 @@ alias v='nvim'      # Quick Neovim access
 alias vim='nvim'    # Override vim with Neovim
 
 # Enhanced file listing with exa (replacement for ls)
-alias ls='exa --icons --color=always --group-directories-first'           # Basic listing
-alias lsl='exa --git --icons --color=always --group-directories-first --long'  # Detailed listing
-alias lst='exa --git --icons --color=always --group-directories-first --tree'  # Tree view
+alias ls='eza --icons --color=always --group-directories-first'           # Basic listing
+alias lsl='eza --git --icons --color=always --group-directories-first --long'  # Detailed listing
+alias lst='eza --git --icons --color=always --group-directories-first --tree'  # Tree view
+
+# Directory navigation shortcuts (not included in common-aliases)
+alias ..='cd ..'
+alias ...='cd ../..'
+alias ....='cd ../../..'
+alias .....='cd ../../../..'
 
 # Git workflow shortcuts
 alias gfu='git commit --fixup'                                    # Create fixup commit
@@ -89,9 +103,8 @@ alias oo='cd $HOME/library/Mobile\ Documents/iCloud~md~obsidian/Documents/Second
 #         EXTERNAL TOOLS            #
 #####################################
 
-# Z script - allows quick directory jumping based on frecency (frequency + recency)
-# Usage: z <partial_directory_name>
-. /usr/local/bin/z.sh
+# Zoxide - allows quick directory jumping based on frecency (frequency + recency)
+eval "$(zoxide init zsh)"
 
 # FZF fuzzy finder integration - adds CTRL-R history search, CTRL-T file search
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
