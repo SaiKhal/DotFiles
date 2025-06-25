@@ -28,6 +28,7 @@ brew "bat"                 # Cat with syntax highlighting
 brew "eza"                 # Modern ls replacement
 brew "zoxide"              # Better CD with Z functionality
 brew "pure"                # CLI Prompt
+brew "texlive"             # Latex support
 
 # Git and Version Control
 brew "git"                 # Version control
