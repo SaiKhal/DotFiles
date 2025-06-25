@@ -2,21 +2,28 @@
 #         ZSH CONFIGURATION         #
 #####################################
 
-# Oh My Zsh framework - provides themes, plugins, and helpful functions
-export ZSH=$HOME/.oh-my-zsh
-# Custom Nord theme for terminal colors
-ZSH_THEME="nord-extended/nord"
+# Zinit installation and initialization
+ZINIT_HOME="${XDG_DATA_HOME:-${HOME}/.local/share}/zinit/zinit.git"
+[ ! -d $ZINIT_HOME ] && mkdir -p "$(dirname $ZINIT_HOME)"
+[ ! -d $ZINIT_HOME/.git ] && git clone https://github.com/zdharma-continuum/zinit.git "$ZINIT_HOME"
+source "${ZINIT_HOME}/zinit.zsh"
 
-# Enabled plugins for enhanced functionality
-plugins=(
-  git                      # Git shortcuts and status info
-  zsh-completions         # Additional auto-completions
-  zsh-autosuggestions     # Suggests commands based on history
-  zsh-syntax-highlighting # Highlights commands as you type (must be last)
-)
+# Load plugins with turbo loading for better performance
+zinit wait lucid for \
+  OMZL::git.zsh \
+  OMZP::git
 
-# Load Oh My Zsh framework
-source $ZSH/oh-my-zsh.sh
+# Additional completions (loaded immediately)
+zinit ice wait"0" lucid blockf
+zinit light zsh-users/zsh-completions
+
+# Command autosuggestions (loaded with slight delay)
+zinit ice wait"0" lucid atload"_zsh_autosuggest_start"
+zinit light zsh-users/zsh-autosuggestions
+
+# Syntax highlighting (must load last, with delay)
+zinit ice wait"0" lucid
+zinit light zsh-users/zsh-syntax-highlighting
 
 #####################################
 #       ENVIRONMENT VARIABLES       #
