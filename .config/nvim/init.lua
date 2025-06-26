@@ -1,3 +1,2 @@
-require 'keymaps'
-require 'options'
-require 'plugins'
+require 'config'
+require 'config.setup'
