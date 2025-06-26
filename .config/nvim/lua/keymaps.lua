@@ -40,16 +40,6 @@ keymap("n", "L", "$", opts)
 -- Escape --
 keymap("n", "<ESC>", ":noh<CR>", term_opts)
 
--- Telescope --
-keymap("n", "<leader>ff", ":Telescope find_files<cr>", opts)
-keymap("n", "<leader>fg", ":Telescope repo list<cr>", opts)
-keymap("n", "<leader>fb", ":Telescope buffers<cr>", opts)
-keymap("n", "<leader>fh", ":Telescope help_tags<cr>", opts)
-
--- Nvim tree --
-keymap("n", "<leader>t", ":NvimTreeToggle<CR>", opts)
-
-
 -- Visual Mode --
 -- Stay in indent mode when tabbing --
 keymap("v", "<", "<gv", opts)

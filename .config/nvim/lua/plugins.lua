@@ -22,8 +22,8 @@ require("lazy").setup({
   "nvim-lua/plenary.nvim",
 
   -- Telescope and extensions
-  "nvim-telescope/telescope.nvim",
-  "cljoly/telescope-repo.nvim",
+  -- "nvim-telescope/telescope.nvim",
+  -- "cljoly/telescope-repo.nvim",
 
   -- Colorschemes
   "tssm/fairyfloss.vim",
@@ -46,10 +46,12 @@ require("lazy").setup({
   {
     "kyazdani42/nvim-tree.lua",
     dependencies = { "kyazdani42/nvim-web-devicons" },
+    keys = {
+      { "<leader>t", "<cmd>NvimTreeToggle<cr>", desc = "Toggle File Tree" },
+    },
     config = function()
       require("nvim-tree").setup({
         hijack_cursor = true,
-        open_on_setup = true,
         open_on_tab = true,
         update_focused_file = {
           enable = true,
@@ -59,10 +61,33 @@ require("lazy").setup({
           enable = false,
         },
         view = {
+          adaptive_size = true,
           width = 30,
           side = "left",
-          auto_resize = true,
           number = false,
+        },
+      })
+    end,
+  },
+
+  -- Fuzzy finder
+  {
+    "ibhagwan/fzf-lua",
+    -- optional for icon support
+    dependencies = { "nvim-tree/nvim-web-devicons" },
+    keys = {
+      { "<leader>ff", "<cmd>FzfLua files<cr>", desc = "Find Files" },
+      { "<leader>fg", "<cmd>FzfLua live_grep<cr>", desc = "Live Grep" },
+      { "<leader>fb", "<cmd>FzfLua buffers<cr>", desc = "Buffers" },
+      { "<leader>fr", "<cmd>FzfLua oldfiles<cr>", desc = "Recent Files" },
+      { "<leader>fc", "<cmd>FzfLua commands<cr>", desc = "Commands" },
+      { "<leader>fh", "<cmd>FzfLua help_tags<cr>", desc = "Help Tags" },
+      { "<leader>fs", "<cmd>FzfLua lsp_document_symbols<cr>", desc = "Document Symbols" },
+    },
+    config = function()
+      require("fzf-lua").setup({
+        files = {
+          hidden = true,  -- Show hidden files
         },
       })
     end,
