@@ -10,11 +10,10 @@ source "${ZINIT_HOME}/zinit.zsh"
 
 # Load plugins with turbo loading for better performance
 zinit wait lucid for \
-  OMZL::git.zsh \
   OMZP::git \
   OMZP::common-aliases
 
-# Additional completions (loaded immediately)
+# Additional completions (loaded immediately) -- blockf ensures completions dont interfere with completions from other plugins
 zinit ice wait"0" lucid blockf
 zinit light zsh-users/zsh-completions
 
@@ -92,7 +91,7 @@ alias gfu='git commit --fixup'                                    # Create fixup
 alias fix='git diff --name-only | uniq | xargs $EDITOR'          # Edit all changed files
 
 # General tools
-alias t='tmux'                                                     # Quick tmux access
+alias tm='tmux'                                                     # Quick tmux access
 alias config='/usr/bin/git --git-dir=$HOME/.cfg/ --work-tree=$HOME'  # Dotfiles management
 
 # Apple Silicon Mac - force specific architectures
@@ -114,6 +113,11 @@ eval "$(zoxide init zsh)"
 # FZF fuzzy finder integration - adds CTRL-R history search, CTRL-T file search
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 
+# Setup carapace autocompletions
+export CARAPACE_BRIDGES='zsh,fish,bash,inshellisense' # optional
+zstyle ':completion:*' format $'\e[2;37mCompleting %d\e[m'
+source <(carapace _carapace)
+
 #####################################
 #         PROMPT CONFIGURATION      #
 #####################################
@@ -125,10 +129,10 @@ autoload -U promptinit; promptinit
 PURE_CMD_MAX_EXEC_TIME=3
 
 # Nord theme colors for Pure prompt
-zstyle :prompt:pure:path color '#8fbcbb'        # Path color (frost)
-zstyle :prompt:pure:git:branch color '#d8dee9'  # Git branch (snow storm)
-zstyle :prompt:pure:git:arrow color '#88c0d0'   # Git arrows (frost)
-zstyle :prompt:pure:git:stash color '#88c0d0'   # Git stash indicator (frost)
+# zstyle :prompt:pure:path color '#8fbcbb'        # Path color (frost)
+# zstyle :prompt:pure:git:branch color '#d8dee9'  # Git branch (snow storm)
+# zstyle :prompt:pure:git:arrow color '#88c0d0'   # Git arrows (frost)
+# zstyle :prompt:pure:git:stash color '#88c0d0'   # Git stash indicator (frost)
 zstyle :prompt:pure:git:stash show yes          # Show git stash count
 
 # Activate Pure prompt

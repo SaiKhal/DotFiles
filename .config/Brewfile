@@ -29,6 +29,7 @@ brew "eza"                 # Modern ls replacement
 brew "zoxide"              # Better CD with Z functionality
 brew "pure"                # CLI Prompt
 brew "texlive"             # Latex support
+brew "carapace"            # Completion engine for CLI tools
 
 # Git and Version Control
 brew "git"                 # Version control
@@ -91,10 +92,11 @@ end
 #####################################
 
 # Additional useful tools (uncomment as needed)
-# brew "node"                    # Node.js runtime
-# brew "python@3.11"             # Python interpreter
 brew "rust"                      # Rust programming language
 brew "go"                        # Go programming language
+
+# brew "node"                      # Node.js runtime
+# brew "python@3.13"             # Python interpreter
 # brew "docker"                  # Containerization (Linux)
 # brew "kubectl"                 # Kubernetes CLI
 # brew "terraform"               # Infrastructure as code
