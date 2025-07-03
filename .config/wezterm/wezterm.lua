@@ -6,7 +6,7 @@ return {
 	font_size = 14.0,
 
 	-- Color
-	color_scheme = "nord",
+	color_scheme = "Catppuccin Mocha",
 	colors = colors,
 	window_frame = window_frame, -- needed only if using fancy tab bar
 

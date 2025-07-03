@@ -1,16 +1,15 @@
 return {
-  -- Active
-  {
-    "shaunsingh/nord.nvim",
-    priority = 1000,
-    config = function()
-      vim.cmd("colorscheme nord")
-    end,
-  },
-
-  -- Other
-  "tssm/fairyfloss.vim",
-  "kyazdani42/blue-moon",
-  "arcticicestudio/nord-vim",
-}  
-  
+	{
+		"catppuccin/nvim",
+		name = "catppuccin",
+		priority = 1000,
+		config = function()
+			vim.cmd("colorscheme catppuccin-mocha")
+		end,
+	},
+	"shaunsingh/nord.nvim",
+	"tssm/fairyfloss.vim",
+	"kyazdani42/blue-moon",
+	"arcticicestudio/nord-vim",
+	"rebelot/kanagawa.nvim",
+}
