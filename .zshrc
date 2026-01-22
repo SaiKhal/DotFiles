@@ -1,4 +1,4 @@
-#####################################
+####################################
 #         ZSH CONFIGURATION         #
 #####################################
 
@@ -93,6 +93,7 @@ alias fix='git diff --name-only | uniq | xargs $EDITOR'          # Edit all chan
 # General tools
 alias tm='tmux'                                                     # Quick tmux access
 alias config='/usr/bin/git --git-dir=$HOME/.cfg/ --work-tree=$HOME'  # Dotfiles management
+alias ctig='GIT_DIR=$HOME/.cfg GIT_WORK_TREE=$HOME tig'             # Dotfiles with tig
 
 # Apple Silicon Mac - force specific architectures
 if [[ "$(uname -s)" == "Darwin" && "$(uname -m)" == "arm64" ]]; then

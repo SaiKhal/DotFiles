@@ -6,6 +6,10 @@ return {
 		config = function()
 			vim.cmd("colorscheme catppuccin-mocha")
 		end,
+		mini = {
+			enabled = true,
+			indentscope_color = "", -- catppuccin color (eg. `lavender`) Default: text
+		},
 	},
 	"shaunsingh/nord.nvim",
 	"tssm/fairyfloss.vim",
