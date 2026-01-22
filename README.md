@@ -1,4 +1,4 @@
-# Dotfiles Management with Bare Git Repository
+# Dotfiles (Bare Git Repository)
 
 This repository uses the "bare git repository" method for managing dotfiles. This approach allows you to version control your configuration files directly in your home directory without symlinks or special tools.
 
