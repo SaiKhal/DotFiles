@@ -1,283 +1,582 @@
-# Dotfiles Management with Bare Git Repository
+# Dotfiles Management with GNU Stow
 
-This repository uses the "bare git repository" method for managing dotfiles. This approach allows you to version control your configuration files directly in your home directory without symlinks or special tools.
+This repository uses **GNU Stow** for managing dotfiles. Stow is a symlink farm manager that makes it easy to manage your configuration files by creating symlinks from a central repository to your home directory.
 
-## How It Works
+## 📦 What's Inside
 
-Instead of storing dotfiles in a separate folder and symlinking them, this method:
-- Creates a bare git repository in `~/.cfg/`
-- Uses a custom `config` alias that points git to this bare repository
-- Treats your entire home directory as the working tree
-- Only tracks files you explicitly add (ignores everything else)
+This repository contains configuration files for:
 
-## Initial Setup (First Time)
+- **nvim** - Neovim configuration with Lazy.nvim plugin manager
+- **tmux** - Terminal multiplexer configuration
+- **wezterm** - WezTerm terminal emulator configuration
+- **zsh** - Zsh shell configuration
+- **Brewfile** - Homebrew package definitions (macOS/Linux)
 
-If you're starting from scratch and want to begin tracking your dotfiles:
+## 🚀 Quick Start
 
-```shell
-# 1. Create a bare git repository
-git init --bare $HOME/.cfg
+<details>
+<summary><strong>Installing on a New Machine</strong></summary>
 
-# 2. Create the config alias
-alias config='/usr/bin/git --git-dir=$HOME/.cfg/ --work-tree=$HOME'
+### Prerequisites
 
-# 3. Hide untracked files (important!)
-config config --local status.showUntrackedFiles no
-
-# 4. Add the alias to your shell config (zsh)
-echo "alias config='/usr/bin/git --git-dir=$HOME/.cfg/ --work-tree=$HOME'" >> $HOME/.zshrc
-
-# 5. Reload your shell or source the config
-source ~/.zshrc
-
-# 6. Add your dotfiles to version control
-config add .vimrc
-config add .bashrc
-config add .zshrc
-config commit -m "Initial commit: Add basic dotfiles"
-
-# 7. Add remote repository (replace with your repo URL)
-config remote add origin https://github.com/yourusername/dotfiles.git
-config push -u origin main
-```
-
-## Installing Dotfiles on a New Machine
-
-To set up your dotfiles on a fresh system:
+First, install GNU Stow:
 
 ```shell
-# 1. Clone the repository as a bare repo
-git clone --bare https://github.com/yourusername/dotfiles.git $HOME/.cfg
+# macOS (with Homebrew)
+brew install stow
 
-# 2. Create the config alias
-alias config='/usr/bin/git --git-dir=$HOME/.cfg/ --work-tree=$HOME'
+# Ubuntu/Debian
+sudo apt install stow
 
-# 3. Checkout the files to your home directory
-config checkout
+# Fedora/RHEL
+sudo dnf install stow
+
+# Arch Linux
+sudo pacman -S stow
 ```
 
-If the checkout fails due to existing files, back them up:
-```shell
-# Create backup directory
-mkdir -p .config-backup
+### Installation Steps
 
-# Move conflicting files to backup
-config checkout 2>&1 | egrep "\s+\." | awk {'print $1'} | xargs -I{} mv {} .config-backup/{}
+1. **Clone this repository to your home directory:**
+   ```shell
+   cd ~
+   git clone https://github.com/SaiKhal/DotFiles.git
+   cd DotFiles
+   ```
 
-# Try checkout again
-config checkout
+2. **Stow the packages you want:**
+   ```shell
+   # Stow individual packages
+   stow nvim
+   stow tmux
+   stow wezterm
+   stow zsh
+   
+   # Or stow everything at once
+   stow */
+   ```
 
-# 4. Hide untracked files
-config config --local status.showUntrackedFiles no
+3. **Verify the symlinks were created:**
+   ```shell
+   ls -la ~/.config/nvim    # Should be a symlink
+   ls -la ~/.zshrc          # Should be a symlink
+   ```
 
-# 5. Add the alias to your shell config permanently
-echo "alias config='/usr/bin/git --git-dir=$HOME/.cfg/ --work-tree=$HOME'" >> $HOME/.zshrc
+4. **(Optional) Install Homebrew packages:**
+   ```shell
+   # macOS or Linux with Homebrew
+   brew bundle --file=~/DotFiles/Brewfile
+   ```
 
-# 6. Reload your shell
-source ~/.zshrc
-```
+</details>
 
-## One-Line Installation Script
+<details>
+<summary><strong>⚠️ Important: Handling Existing Files</strong></summary>
 
-For convenience, you can create a script to automate the installation:
+If you have existing configuration files, Stow will **refuse to create symlinks** and show an error. This is a safety feature.
 
-```shell
-curl -Lks https://raw.githubusercontent.com/yourusername/dotfiles/main/install.sh | /bin/bash
-```
-
-Example `install.sh` script:
-```shell
-#!/bin/bash
-git clone --bare https://github.com/yourusername/dotfiles.git $HOME/.cfg
-
-function config {
-   /usr/bin/git --git-dir=$HOME/.cfg/ --work-tree=$HOME $@
-}
-
-mkdir -p .config-backup
-config checkout
-
-if [ $? = 0 ]; then
-  echo "Checked out config."
-else
-  echo "Backing up pre-existing dot files."
-  config checkout 2>&1 | egrep "\s+\." | awk {'print $1'} | xargs -I{} mv {} .config-backup/{}
-fi
-
-config checkout
-config config --local status.showUntrackedFiles no
-echo "Dotfiles installed successfully!"
-```
-
-## Daily Usage
-
-Once set up, use the `config` command instead of `git` for managing dotfiles:
+### Solution: Backup or Remove Existing Files
 
 ```shell
-# Check status
-config status
+# Option 1: Backup existing configs
+mkdir -p ~/.dotfiles-backup
+mv ~/.config/nvim ~/.dotfiles-backup/
+mv ~/.zshrc ~/.dotfiles-backup/
+mv ~/.tmux.conf ~/.dotfiles-backup/
 
-# Add new files
-config add .gitconfig
-config add .tmux.conf
+# Then run stow again
+cd ~/DotFiles
+stow nvim zsh tmux
 
-# Commit changes
-config commit -m "Add tmux configuration"
+# Option 2: Remove existing configs (if you don't need them)
+rm -rf ~/.config/nvim
+rm ~/.zshrc
 
-# Push to remote
-config push
-
-# Pull updates
-config pull
-
-# View history
-config log --oneline
-
-# Check differences
-config diff
+# Then run stow
+cd ~/DotFiles
+stow nvim zsh
 ```
 
-## Useful Commands
+### Checking for Conflicts Before Stowing
 
 ```shell
-# See what files are tracked
-config ls-tree -r HEAD --name-only
+# Dry-run to see what would happen (no changes made)
+stow -n -v nvim
 
-# Add a file and commit in one go
-config add .vimrc && config commit -m "Update vim config"
-
-# Create and switch to a new branch (useful for different machines)
-config checkout -b laptop
-
-# List all branches
-config branch -a
-
-# Compare branches
-config diff main..laptop
+# The -n flag simulates the operation
+# The -v flag shows verbose output
 ```
 
-## Tips and Best Practices
+</details>
 
-### File Organization
-- Keep machine-specific configs in separate branches
-- Use conditional logic in config files for different environments
-- Document any special setup requirements
+## 📚 How GNU Stow Works
 
-### What to Track
-**Good candidates:**
-- Shell configs (`.zshrc`, `.zsh_profile`, `.profile`)
-- Editor configs (`.vimrc`, `.emacs.d/`)
-- Git config (`.gitconfig`)
-- SSH config (`.ssh/config` - **not** private keys!)
-- Application configs (`.tmux.conf`, `.inputrc`)
+<details>
+<summary><strong>Understanding the Magic</strong></summary>
 
-**Avoid tracking:**
-- Private keys or sensitive data
-- Cache directories
-- Large binary files
-- OS-specific files that shouldn't be shared
+Stow creates symlinks from your package directories to your home directory, maintaining the directory structure.
 
-### Ignoring Files
-The repository is configured to hide untracked files, but you can also create a `.gitignore` file in your home directory for explicit ignoring:
+### Directory Structure
+
+```
+~/DotFiles/
+├── nvim/
+│   └── .config/
+│       └── nvim/
+│           └── init.lua       → symlinked to ~/.config/nvim/init.lua
+├── zsh/
+│   └── .zshrc                 → symlinked to ~/.zshrc
+└── tmux/
+    ├── .config/
+    │   └── tmux/              → symlinked to ~/.config/tmux/
+    └── .tmux.conf             → symlinked to ~/.tmux.conf
+```
+
+### The Stow Command
 
 ```shell
-# Add to ~/.gitignore
-.DS_Store
-*.log
-node_modules/
-.cache/
+cd ~/DotFiles
+stow <package-name>
 ```
 
-### Branch Strategy
-Use different branches for different machines or environments:
+When you run `stow nvim`, Stow:
+1. Looks in the `nvim/` directory
+2. Finds `.config/nvim/`
+3. Creates a symlink from `~/.config/nvim/` → `~/DotFiles/nvim/.config/nvim/`
+
+The key is that Stow assumes the parent directory of the package directories (`~/DotFiles`) is where you want the symlinks to point **from**, and your home directory (`~`) is where you want them to point **to**.
+
+</details>
+
+## 🛠️ Essential Stow Commands
+
+<details>
+<summary><strong>Common Operations</strong></summary>
+
+### Stowing (Installing) Packages
+
 ```shell
-# Create branches for different setups
-config checkout -b work-laptop
-config checkout -b personal-desktop
-config checkout -b server
+# Stow a single package
+stow nvim
 
-# Merge common changes back to main
-config checkout main
-config merge work-laptop
+# Stow multiple packages
+stow nvim tmux zsh
+
+# Stow all packages
+stow */
+
+# Stow with verbose output (see what's happening)
+stow -v nvim
+
+# Dry-run (simulate without making changes)
+stow -n -v nvim
 ```
 
-## Troubleshooting
+### Unstowing (Removing) Packages
 
-### Config alias not working
-Make sure the alias is properly set and your shell config is sourced:
 ```shell
-# Check if alias exists
-alias config
+# Remove symlinks for a package
+stow -D nvim
 
-# If not, add it again
-echo "alias config='/usr/bin/git --git-dir=$HOME/.cfg/ --work-tree=$HOME'" >> ~/.zshrc
-source ~/.zshrc
+# Remove multiple packages
+stow -D nvim tmux zsh
+
+# Remove all packages
+stow -D */
 ```
 
-### Files showing as untracked
-This is normal! The repository is configured to hide untracked files:
+### Restowing (Update) Packages
+
+Useful when you've changed the structure of your dotfiles:
+
 ```shell
-# Verify the setting
-config config --local status.showUntrackedFiles
+# Remove and re-create symlinks (updates everything)
+stow -R nvim
 
-# Should return: no
+# Restow multiple packages
+stow -R nvim tmux zsh
+
+# Restow all packages
+stow -R */
 ```
 
-### Accidentally committed too many files
+### Adopting Existing Files
+
+If you have existing configuration files you want to move into your dotfiles repo:
+
 ```shell
-# Remove files from tracking (but keep local copies)
-config rm --cached unwanted-file
+# Adopt existing files (moves them into the package and creates symlinks)
+stow --adopt nvim
 
-# Commit the removal
-config commit -m "Remove unwanted file from tracking"
+# WARNING: This moves files from ~ to ~/DotFiles/nvim/
+# Review changes with git diff before committing!
 ```
 
-### Reset to clean state
+</details>
+
+## ⚙️ Managing Your Dotfiles
+
+<details>
+<summary><strong>Daily Workflow</strong></summary>
+
+### Making Changes
+
+Since your dotfiles are symlinked, you can edit them in place:
+
 ```shell
-# Hard reset to last commit (DESTRUCTIVE!)
-config reset --hard HEAD
+# Edit config files as normal
+vim ~/.config/nvim/init.lua
+vim ~/.zshrc
 
-# Or reset specific file
-config checkout HEAD -- filename
+# Changes are automatically in the git repo
+cd ~/DotFiles
+git status
+git diff
+
+# Commit and push
+git add .
+git commit -m "Update nvim config"
+git push
 ```
 
-## Migration from Other Methods
+### Adding New Configuration Files
 
-### From symlink-based dotfiles
-1. Remove existing symlinks
-2. Copy actual config files to home directory
-3. Follow the "Initial Setup" instructions above
+```shell
+# Let's say you want to add a new Git config
+cd ~/DotFiles
 
-### From existing git repository
-If you already have dotfiles in a regular git repository:
-1. Clone this repository method alongside your existing one
-2. Copy files from old repo to home directory
-3. Use `config add` to track them
-4. Remove old repository when satisfied
+# Create a new package directory
+mkdir -p git
 
-## Security Notes
+# Move your gitconfig there
+mv ~/.gitconfig git/
+
+# Stow it
+stow git
+
+# Add to git
+git add git/
+git commit -m "Add git configuration"
+git push
+```
+
+### Syncing Changes Across Machines
+
+```shell
+# On machine A: Make changes and push
+cd ~/DotFiles
+git add .
+git commit -m "Update tmux config"
+git push
+
+# On machine B: Pull and restow
+cd ~/DotFiles
+git pull
+stow -R tmux  # Restow to update symlinks if structure changed
+```
+
+</details>
+
+## ⚠️ Things to Watch Out For
+
+<details>
+<summary><strong>Common Pitfalls and Solutions</strong></summary>
+
+### 1. **Stow From the Wrong Directory**
+
+❌ **Wrong:**
+```shell
+cd ~/DotFiles/nvim
+stow nvim  # Error! Stow can't find the package
+```
+
+✅ **Correct:**
+```shell
+cd ~/DotFiles
+stow nvim
+```
+
+### 2. **Existing Files Block Stowing**
+
+Stow won't overwrite existing files. You'll see an error like:
+```
+WARNING! stowing nvim would cause conflicts:
+  * existing target is neither a link nor a directory: .config/nvim
+```
+
+**Solution:** Backup or remove the existing file first (see "Handling Existing Files" section above).
+
+### 3. **Wrong Directory Structure**
+
+Your package directory structure must mirror where files should go.
+
+❌ **Wrong:**
+```
+DotFiles/
+└── nvim/
+    └── init.lua              # Won't work - will try to create ~/init.lua
+```
+
+✅ **Correct:**
+```
+DotFiles/
+└── nvim/
+    └── .config/
+        └── nvim/
+            └── init.lua      # Creates ~/.config/nvim/init.lua
+```
+
+### 4. **Forgetting to Restow After Structural Changes**
+
+If you add/remove directories in your package, you need to restow:
+
+```shell
+# After adding new directories or files
+stow -R nvim
+```
+
+### 5. **Accidentally Adopting the Wrong Files**
+
+The `--adopt` flag moves files from your home directory into the dotfiles repo. Be careful!
+
+```shell
+# Always check what would be adopted first
+stow -n --adopt nvim
+
+# Review what was moved before committing
+git status
+git diff
+```
+
+### 6. **Nested Stow Directories**
+
+Don't create nested stow directories. Keep packages flat:
+
+❌ **Wrong:**
+```
+DotFiles/
+└── configs/
+    └── nvim/
+        └── .config/nvim/
+```
+
+✅ **Correct:**
+```
+DotFiles/
+└── nvim/
+    └── .config/nvim/
+```
+
+</details>
+
+## 🔧 Troubleshooting
+
+<details>
+<summary><strong>Common Issues</strong></summary>
+
+### Symlinks Not Being Created
+
+```shell
+# Check if you're in the right directory
+pwd  # Should be ~/DotFiles
+
+# Check package structure
+ls -la nvim/  # Should show the directory structure
+
+# Try with verbose output to see what's happening
+stow -v nvim
+```
+
+### "Cannot Stow" Errors
+
+```shell
+# Common causes:
+# 1. Existing files/directories in the way
+ls -la ~/.config/nvim  # Check if it exists
+
+# 2. Wrong directory structure
+ls -la ~/DotFiles/nvim/  # Verify structure
+
+# 3. Permission issues
+ls -ld ~  # Check home directory permissions
+```
+
+### Broken Symlinks
+
+```shell
+# Find broken symlinks in your home directory
+find ~ -maxdepth 3 -xtype l 2>/dev/null
+
+# Remove broken symlinks
+find ~ -maxdepth 3 -xtype l -delete 2>/dev/null
+
+# Restow the package
+cd ~/DotFiles
+stow -R nvim
+```
+
+### Unstowing Doesn't Remove All Symlinks
+
+```shell
+# Force unstow (removes even if there are issues)
+stow -D --force nvim
+
+# Clean up manually if needed
+rm ~/.config/nvim  # if it's a symlink
+```
+
+</details>
+
+## 📖 Additional Resources
+
+<details>
+<summary><strong>Learn More</strong></summary>
+
+### Official Documentation
+- [GNU Stow Manual](https://www.gnu.org/software/stow/manual/stow.html)
+- [GNU Stow Info Page](https://www.gnu.org/software/stow/)
+
+### Tutorials and Guides
+- [Using GNU Stow to Manage Dotfiles](https://alexpearce.me/2016/02/managing-dotfiles-with-stow/)
+- [Stow Has Forever Changed The Way I Manage My Dotfiles](https://www.jakewiesler.com/blog/managing-dotfiles)
+- [Brandon Invergo's Guide](http://brandon.invergo.net/news/2012-05-26-using-gnu-stow-to-manage-your-dotfiles.html)
+
+### Video Tutorials
+- [Dreams of Autonomy - Stow Dotfiles](https://www.youtube.com/watch?v=y6XCebnB9gs)
+- [DevInsideYou - GNU Stow Tutorial](https://www.youtube.com/watch?v=CxAT1u8G7is)
+
+</details>
+
+## 💡 Tips and Best Practices
+
+<details>
+<summary><strong>Pro Tips</strong></summary>
+
+### 1. **Use a Makefile or Script**
+
+Create a `Makefile` or installation script:
+
+```makefile
+# Makefile
+.PHONY: install uninstall restow
+
+install:
+	stow nvim tmux wezterm zsh
+
+uninstall:
+	stow -D nvim tmux wezterm zsh
+
+restow:
+	stow -R nvim tmux wezterm zsh
+```
+
+Usage: `make install`, `make uninstall`, `make restow`
+
+### 2. **Organize by Functionality**
+
+Keep related configs together:
+```
+DotFiles/
+├── shell/           # All shell-related configs
+│   ├── .zshrc
+│   └── .bashrc
+├── editors/
+│   ├── .vimrc
+│   └── .config/nvim/
+└── terminal/
+    └── .config/wezterm/
+```
+
+### 3. **Use .stow-local-ignore**
+
+Ignore files within packages from being stowed:
+
+```shell
+# Create .stow-local-ignore in your package directory
+cd ~/DotFiles/nvim
+cat > .stow-local-ignore << EOF
+README.md
+.git
+.gitignore
+*.swp
+EOF
+```
+
+### 4. **Machine-Specific Configs**
+
+Use git branches for different machines:
+
+```shell
+# Create a branch for your work machine
+git checkout -b work-laptop
+# Make machine-specific changes
+git add .
+git commit -m "Work laptop specific configs"
+
+# Switch back to main for shared configs
+git checkout main
+```
+
+### 5. **Ignore Packages You Don't Want**
+
+Don't stow everything on every machine:
+
+```shell
+# On a server, you might not need wezterm
+cd ~/DotFiles
+stow nvim tmux zsh  # Skip wezterm
+```
+
+### 6. **Document Your Setup**
+
+Keep notes about dependencies or special setup:
+
+```markdown
+## nvim
+Requires:
+- Node.js (for LSP servers)
+- ripgrep (for telescope.nvim)
+- fd (for telescope.nvim)
+
+Install: `brew install node ripgrep fd`
+```
+
+</details>
+
+## 🔐 Security Notes
 
 - **Never commit private keys** or sensitive credentials
 - Use environment variables or separate private config files for secrets
-- Consider encrypting sensitive dotfiles with tools like `git-crypt`
 - Review commits before pushing to public repositories
+- Consider using `git-crypt` or `blackbox` for encrypting sensitive files
+- Add sensitive files to `.gitignore`
 
-## Why This Method?
+## ❓ Why GNU Stow?
 
-**Advantages:**
-- No symlinks to manage or break
-- Native git functionality - no wrapper tools
-- Easy to replicate on new machines
-- Can use branches for different environments
-- Files stay in their expected locations
+<details>
+<summary><strong>Advantages and Disadvantages</strong></summary>
 
-**Disadvantages:**
-- Slightly more complex initial setup
-- Need to remember to use `config` instead of `git`
-- Can be confusing if you're not familiar with bare repositories
+### Advantages
+✅ Simple and lightweight (no complex framework)  
+✅ Uses symlinks - edit configs in place  
+✅ Easy to see what's managed (just check for symlinks)  
+✅ Selective installation (pick and choose packages)  
+✅ Easy to add/remove configurations  
+✅ Version control friendly  
+✅ Works on any Unix-like system  
+✅ No special uninstall needed (just `stow -D`)  
 
-## Resources
+### Disadvantages
+❌ Requires GNU Stow to be installed  
+❌ Must maintain specific directory structure  
+❌ Symlinks can be confusing for beginners  
+❌ Need to handle conflicts manually  
+❌ Can't easily track files outside home directory without sudo  
 
-- [Original Hacker News discussion](https://news.ycombinator.com/item?id=11070797)
-- [Atlassian tutorial](https://www.atlassian.com/git/tutorials/dotfiles)
-- [Git bare repository documentation](https://git-scm.com/docs/git-clone#Documentation/git-clone.txt---bare)
+</details>
+
+---
+
+**Happy Stowing! 🎉**
+
+For issues or questions about this dotfiles setup, please [open an issue](https://github.com/SaiKhal/DotFiles/issues).
