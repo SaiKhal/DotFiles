@@ -1,19 +1,6 @@
-# Dotfiles (Bare Git Repository)
+# Dotfiles Management with Bare Git Repository
 
 This repository uses the "bare git repository" method for managing dotfiles. This approach allows you to version control your configuration files directly in your home directory without symlinks or special tools.
-
-## 📖 Table of Contents
-
-- [How It Works](#how-it-works)
-- [Quick Start](#quick-start)
-- [Setup Instructions](#setup-instructions)
-- [Daily Usage](#daily-usage)
-- [Tips and Best Practices](#tips-and-best-practices)
-- [Troubleshooting](#troubleshooting)
-- [Migration Guide](#migration-guide)
-- [Resources](#resources)
-
----
 
 ## How It Works
 
@@ -23,98 +10,7 @@ Instead of storing dotfiles in a separate folder and symlinking them, this metho
 - Treats your entire home directory as the working tree
 - Only tracks files you explicitly add (ignores everything else)
 
----
-
-## Quick Start
-
-<details open>
-<summary><b>🚀 Installing on a New Machine</b></summary>
-
-<br>
-
-To set up your dotfiles on a fresh system:
-
-```shell
-# 1. Clone the repository as a bare repo
-git clone --bare https://github.com/yourusername/dotfiles.git $HOME/.cfg
-
-# 2. Create the config alias
-alias config='/usr/bin/git --git-dir=$HOME/.cfg/ --work-tree=$HOME'
-
-# 3. Checkout the files to your home directory
-config checkout
-
-# 4. Hide untracked files
-config config --local status.showUntrackedFiles no
-
-# 5. Add the alias to your shell config permanently
-echo "alias config='/usr/bin/git --git-dir=$HOME/.cfg/ --work-tree=$HOME'" >> $HOME/.zshrc
-
-# 6. Reload your shell
-source ~/.zshrc
-```
-
-**If checkout fails due to existing files:**
-
-```shell
-# Create backup directory
-mkdir -p .config-backup
-
-# Move conflicting files to backup
-config checkout 2>&1 | egrep "\s+\." | awk {'print $1'} | xargs -I{} mv {} .config-backup/{}
-
-# Try checkout again
-config checkout
-```
-
-</details>
-
-<details>
-<summary><b>📦 One-Line Installation</b></summary>
-
-<br>
-
-For convenience, you can create a script to automate the installation:
-
-```shell
-curl -Lks https://raw.githubusercontent.com/yourusername/dotfiles/main/install.sh | /bin/bash
-```
-
-**Example `install.sh` script:**
-
-```shell
-#!/bin/bash
-git clone --bare https://github.com/yourusername/dotfiles.git $HOME/.cfg
-
-function config {
-   /usr/bin/git --git-dir=$HOME/.cfg/ --work-tree=$HOME $@
-}
-
-mkdir -p .config-backup
-config checkout
-
-if [ $? = 0 ]; then
-  echo "Checked out config."
-else
-  echo "Backing up pre-existing dot files."
-  config checkout 2>&1 | egrep "\s+\." | awk {'print $1'} | xargs -I{} mv {} .config-backup/{}
-fi
-
-config checkout
-config config --local status.showUntrackedFiles no
-echo "Dotfiles installed successfully!"
-```
-
-</details>
-
----
-
-## Setup Instructions
-
-<details>
-<summary><b>🆕 Initial Setup (First Time)</b></summary>
-
-<br>
+## Initial Setup (First Time)
 
 If you're starting from scratch and want to begin tracking your dotfiles:
 
@@ -145,16 +41,75 @@ config remote add origin https://github.com/yourusername/dotfiles.git
 config push -u origin main
 ```
 
-</details>
+## Installing Dotfiles on a New Machine
 
----
+To set up your dotfiles on a fresh system:
+
+```shell
+# 1. Clone the repository as a bare repo
+git clone --bare https://github.com/yourusername/dotfiles.git $HOME/.cfg
+
+# 2. Create the config alias
+alias config='/usr/bin/git --git-dir=$HOME/.cfg/ --work-tree=$HOME'
+
+# 3. Checkout the files to your home directory
+config checkout
+```
+
+If the checkout fails due to existing files, back them up:
+```shell
+# Create backup directory
+mkdir -p .config-backup
+
+# Move conflicting files to backup
+config checkout 2>&1 | egrep "\s+\." | awk {'print $1'} | xargs -I{} mv {} .config-backup/{}
+
+# Try checkout again
+config checkout
+
+# 4. Hide untracked files
+config config --local status.showUntrackedFiles no
+
+# 5. Add the alias to your shell config permanently
+echo "alias config='/usr/bin/git --git-dir=$HOME/.cfg/ --work-tree=$HOME'" >> $HOME/.zshrc
+
+# 6. Reload your shell
+source ~/.zshrc
+```
+
+## One-Line Installation Script
+
+For convenience, you can create a script to automate the installation:
+
+```shell
+curl -Lks https://raw.githubusercontent.com/yourusername/dotfiles/main/install.sh | /bin/bash
+```
+
+Example `install.sh` script:
+```shell
+#!/bin/bash
+git clone --bare https://github.com/yourusername/dotfiles.git $HOME/.cfg
+
+function config {
+   /usr/bin/git --git-dir=$HOME/.cfg/ --work-tree=$HOME $@
+}
+
+mkdir -p .config-backup
+config checkout
+
+if [ $? = 0 ]; then
+  echo "Checked out config."
+else
+  echo "Backing up pre-existing dot files."
+  config checkout 2>&1 | egrep "\s+\." | awk {'print $1'} | xargs -I{} mv {} .config-backup/{}
+fi
+
+config checkout
+config config --local status.showUntrackedFiles no
+echo "Dotfiles installed successfully!"
+```
 
 ## Daily Usage
-
-<details open>
-<summary><b>💻 Common Commands</b></summary>
-
-<br>
 
 Once set up, use the `config` command instead of `git` for managing dotfiles:
 
@@ -182,12 +137,7 @@ config log --oneline
 config diff
 ```
 
-</details>
-
-<details>
-<summary><b>🛠️ Useful Commands</b></summary>
-
-<br>
+## Useful Commands
 
 ```shell
 # See what files are tracked
@@ -206,28 +156,14 @@ config branch -a
 config diff main..laptop
 ```
 
-</details>
-
----
-
 ## Tips and Best Practices
 
-<details>
-<summary><b>📁 File Organization</b></summary>
-
-<br>
-
+### File Organization
 - Keep machine-specific configs in separate branches
 - Use conditional logic in config files for different environments
 - Document any special setup requirements
 
-</details>
-
-<details>
-<summary><b>✅ What to Track</b></summary>
-
-<br>
-
+### What to Track
 **Good candidates:**
 - Shell configs (`.zshrc`, `.zsh_profile`, `.profile`)
 - Editor configs (`.vimrc`, `.emacs.d/`)
@@ -241,13 +177,7 @@ config diff main..laptop
 - Large binary files
 - OS-specific files that shouldn't be shared
 
-</details>
-
-<details>
-<summary><b>🚫 Ignoring Files</b></summary>
-
-<br>
-
+### Ignoring Files
 The repository is configured to hide untracked files, but you can also create a `.gitignore` file in your home directory for explicit ignoring:
 
 ```shell
@@ -258,15 +188,8 @@ node_modules/
 .cache/
 ```
 
-</details>
-
-<details>
-<summary><b>🌿 Branch Strategy</b></summary>
-
-<br>
-
+### Branch Strategy
 Use different branches for different machines or environments:
-
 ```shell
 # Create branches for different setups
 config checkout -b work-laptop
@@ -278,31 +201,10 @@ config checkout main
 config merge work-laptop
 ```
 
-</details>
-
-<details>
-<summary><b>🔒 Security Notes</b></summary>
-
-<br>
-
-- **Never commit private keys** or sensitive credentials
-- Use environment variables or separate private config files for secrets
-- Consider encrypting sensitive dotfiles with tools like `git-crypt`
-- Review commits before pushing to public repositories
-
-</details>
-
----
-
 ## Troubleshooting
 
-<details>
-<summary><b>⚙️ Config alias not working</b></summary>
-
-<br>
-
+### Config alias not working
 Make sure the alias is properly set and your shell config is sourced:
-
 ```shell
 # Check if alias exists
 alias config
@@ -312,15 +214,8 @@ echo "alias config='/usr/bin/git --git-dir=$HOME/.cfg/ --work-tree=$HOME'" >> ~/
 source ~/.zshrc
 ```
 
-</details>
-
-<details>
-<summary><b>📝 Files showing as untracked</b></summary>
-
-<br>
-
+### Files showing as untracked
 This is normal! The repository is configured to hide untracked files:
-
 ```shell
 # Verify the setting
 config config --local status.showUntrackedFiles
@@ -328,13 +223,7 @@ config config --local status.showUntrackedFiles
 # Should return: no
 ```
 
-</details>
-
-<details>
-<summary><b>❌ Accidentally committed too many files</b></summary>
-
-<br>
-
+### Accidentally committed too many files
 ```shell
 # Remove files from tracking (but keep local copies)
 config rm --cached unwanted-file
@@ -343,13 +232,7 @@ config rm --cached unwanted-file
 config commit -m "Remove unwanted file from tracking"
 ```
 
-</details>
-
-<details>
-<summary><b>🔄 Reset to clean state</b></summary>
-
-<br>
-
+### Reset to clean state
 ```shell
 # Hard reset to last commit (DESTRUCTIVE!)
 config reset --hard HEAD
@@ -358,75 +241,43 @@ config reset --hard HEAD
 config checkout HEAD -- filename
 ```
 
-</details>
+## Migration from Other Methods
 
----
-
-## Migration Guide
-
-<details>
-<summary><b>🔗 From symlink-based dotfiles</b></summary>
-
-<br>
-
+### From symlink-based dotfiles
 1. Remove existing symlinks
 2. Copy actual config files to home directory
 3. Follow the "Initial Setup" instructions above
 
-</details>
-
-<details>
-<summary><b>📦 From existing git repository</b></summary>
-
-<br>
-
+### From existing git repository
 If you already have dotfiles in a regular git repository:
-
 1. Clone this repository method alongside your existing one
 2. Copy files from old repo to home directory
 3. Use `config add` to track them
 4. Remove old repository when satisfied
 
-</details>
+## Security Notes
 
----
+- **Never commit private keys** or sensitive credentials
+- Use environment variables or separate private config files for secrets
+- Consider encrypting sensitive dotfiles with tools like `git-crypt`
+- Review commits before pushing to public repositories
 
 ## Why This Method?
 
-<details>
-<summary><b>✨ Advantages</b></summary>
-
-<br>
-
+**Advantages:**
 - No symlinks to manage or break
 - Native git functionality - no wrapper tools
 - Easy to replicate on new machines
 - Can use branches for different environments
 - Files stay in their expected locations
 
-</details>
-
-<details>
-<summary><b>⚠️ Disadvantages</b></summary>
-
-<br>
-
+**Disadvantages:**
 - Slightly more complex initial setup
 - Need to remember to use `config` instead of `git`
 - Can be confusing if you're not familiar with bare repositories
-
-</details>
-
----
 
 ## Resources
 
 - [Original Hacker News discussion](https://news.ycombinator.com/item?id=11070797)
 - [Atlassian tutorial](https://www.atlassian.com/git/tutorials/dotfiles)
 - [Git bare repository documentation](https://git-scm.com/docs/git-clone#Documentation/git-clone.txt---bare)
-
----
-
-<p align="center">
-  <i>Made with ❤️ for better dotfile management</i>
-</p>
