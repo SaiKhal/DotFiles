@@ -40,8 +40,8 @@ sudo pacman -S stow
 1. **Clone this repository to your home directory:**
    ```shell
    cd ~
-   git clone https://github.com/SaiKhal/DotFiles.git
-   cd DotFiles
+   git clone https://github.com/SaiKhal/dots.git
+   cd dots
    ```
 
 2. **Stow the packages you want:**
@@ -65,7 +65,7 @@ sudo pacman -S stow
 4. **(Optional) Install Homebrew packages:**
    ```shell
    # macOS or Linux with Homebrew
-   brew bundle --file=~/DotFiles/Brewfile
+   brew bundle --file=~/dots/Brewfile
    ```
 
 </details>
@@ -85,7 +85,7 @@ mv ~/.zshrc ~/.dotfiles-backup/
 mv ~/.tmux.conf ~/.dotfiles-backup/
 
 # Then run stow again
-cd ~/DotFiles
+cd ~/dots
 stow nvim zsh tmux
 
 # Option 2: Remove existing configs (if you don't need them)
@@ -93,7 +93,7 @@ rm -rf ~/.config/nvim
 rm ~/.zshrc
 
 # Then run stow
-cd ~/DotFiles
+cd ~/dots
 stow nvim zsh
 ```
 
@@ -119,7 +119,7 @@ Stow creates symlinks from your package directories to your home directory, main
 ### Directory Structure
 
 ```
-~/DotFiles/
+~/dots/
 ├── nvim/
 │   └── .config/
 │       └── nvim/
@@ -135,16 +135,16 @@ Stow creates symlinks from your package directories to your home directory, main
 ### The Stow Command
 
 ```shell
-cd ~/DotFiles
+cd ~/dots
 stow <package-name>
 ```
 
 When you run `stow nvim`, Stow:
 1. Looks in the `nvim/` directory
 2. Finds `.config/nvim/`
-3. Creates a symlink from `~/.config/nvim/` → `~/DotFiles/nvim/.config/nvim/`
+3. Creates a symlink from `~/.config/nvim/` → `~/dots/nvim/.config/nvim/`
 
-The key is that Stow assumes the parent directory of the package directories (`~/DotFiles`) is where you want the symlinks to point **from**, and your home directory (`~`) is where you want them to point **to**.
+The key is that Stow assumes the parent directory of the package directories (`~/dots`) is where you want the symlinks to point **from**, and your home directory (`~`) is where you want them to point **to**.
 
 </details>
 
@@ -208,7 +208,7 @@ If you have existing configuration files you want to move into your dotfiles rep
 # Adopt existing files (moves them into the package and creates symlinks)
 stow --adopt nvim
 
-# WARNING: This moves files from ~ to ~/DotFiles/nvim/
+# WARNING: This moves files from ~ to ~/dots/nvim/
 # Review changes with git diff before committing!
 ```
 
@@ -229,7 +229,7 @@ vim ~/.config/nvim/init.lua
 vim ~/.zshrc
 
 # Changes are automatically in the git repo
-cd ~/DotFiles
+cd ~/dots
 git status
 git diff
 
@@ -243,7 +243,7 @@ git push
 
 ```shell
 # Let's say you want to add a new Git config
-cd ~/DotFiles
+cd ~/dots
 
 # Create a new package directory
 mkdir -p git
@@ -264,13 +264,13 @@ git push
 
 ```shell
 # On machine A: Make changes and push
-cd ~/DotFiles
+cd ~/dots
 git add .
 git commit -m "Update tmux config"
 git push
 
 # On machine B: Pull and restow
-cd ~/DotFiles
+cd ~/dots
 git pull
 stow -R tmux  # Restow to update symlinks if structure changed
 ```
@@ -286,13 +286,13 @@ stow -R tmux  # Restow to update symlinks if structure changed
 
 ❌ **Wrong:**
 ```shell
-cd ~/DotFiles/nvim
+cd ~/dots/nvim
 stow nvim  # Error! Stow can't find the package
 ```
 
 ✅ **Correct:**
 ```shell
-cd ~/DotFiles
+cd ~/dots
 stow nvim
 ```
 
@@ -312,14 +312,14 @@ Your package directory structure must mirror where files should go.
 
 ❌ **Wrong:**
 ```
-DotFiles/
+dots/
 └── nvim/
     └── init.lua              # Won't work - will try to create ~/init.lua
 ```
 
 ✅ **Correct:**
 ```
-DotFiles/
+dots/
 └── nvim/
     └── .config/
         └── nvim/
@@ -354,7 +354,7 @@ Don't create nested stow directories. Keep packages flat:
 
 ❌ **Wrong:**
 ```
-DotFiles/
+dots/
 └── configs/
     └── nvim/
         └── .config/nvim/
@@ -362,7 +362,7 @@ DotFiles/
 
 ✅ **Correct:**
 ```
-DotFiles/
+dots/
 └── nvim/
     └── .config/nvim/
 ```
@@ -378,7 +378,7 @@ DotFiles/
 
 ```shell
 # Check if you're in the right directory
-pwd  # Should be ~/DotFiles
+pwd  # Should be ~/dots
 
 # Check package structure
 ls -la nvim/  # Should show the directory structure
@@ -395,7 +395,7 @@ stow -v nvim
 ls -la ~/.config/nvim  # Check if it exists
 
 # 2. Wrong directory structure
-ls -la ~/DotFiles/nvim/  # Verify structure
+ls -la ~/dots/nvim/  # Verify structure
 
 # 3. Permission issues
 ls -ld ~  # Check home directory permissions
@@ -411,7 +411,7 @@ find ~ -maxdepth 3 -xtype l 2>/dev/null
 find ~ -maxdepth 3 -xtype l -delete 2>/dev/null
 
 # Restow the package
-cd ~/DotFiles
+cd ~/dots
 stow -R nvim
 ```
 
@@ -476,7 +476,7 @@ Usage: `make install`, `make uninstall`, `make restow`
 
 Keep related configs together:
 ```
-DotFiles/
+dots/
 ├── shell/           # All shell-related configs
 │   ├── .zshrc
 │   └── .bashrc
@@ -493,7 +493,7 @@ Ignore files within packages from being stowed:
 
 ```shell
 # Create .stow-local-ignore in your package directory
-cd ~/DotFiles/nvim
+cd ~/dots/nvim
 cat > .stow-local-ignore << EOF
 README.md
 .git
@@ -523,7 +523,7 @@ Don't stow everything on every machine:
 
 ```shell
 # On a server, you might not need wezterm
-cd ~/DotFiles
+cd ~/dots
 stow nvim tmux zsh  # Skip wezterm
 ```
 
