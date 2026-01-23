@@ -1,0 +1,19 @@
+# Theme
+theme = catppuccin-mocha
+
+# Mouse
+mouse-hide-while-typing = true
+mouse-scroll-multiplier = 2
+
+# Clipboard
+copy-on-select = clipboard
+
+# Hide menubar
+macos-titlebar-style = hidden
+macos-non-native-fullscreen = true
+
+# Always open fullscreen
+fullscreen = true
+window-save-state = always
+
+
