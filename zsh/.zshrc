@@ -1,6 +1,8 @@
 ####################################
 #         ZSH CONFIGURATION         #
 #####################################
+# Enable ZSH completions system
+autoload -Uz compinit && compinit
 
 # Zinit installation and initialization
 ZINIT_HOME="${XDG_DATA_HOME:-${HOME}/.local/share}/zinit/zinit.git"
@@ -148,5 +150,3 @@ prompt pure
 #           COMPLETIONS             #
 #####################################
 
-# Enable ZSH completions system
-autoload -U compinit && compinit
