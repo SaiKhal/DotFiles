@@ -11,8 +11,17 @@ def linux?
   RUBY_PLATFORM.include?('linux')
 end
 
+# Check if work machine (via env var or prompt)
+def work?
+  return ENV['WORK_MACHINE'] == '1' if ENV['WORK_MACHINE']
+
+  print "Is this a work machine? [y/N] "
+  STDIN.gets.to_s.strip.downcase.start_with?('y')
+end
+
+WORK_MACHINE = work?
+
 # Tap external repositories
-tap "withgraphite/tap"
 
 #####################################
 # Core Development Tools
@@ -28,7 +37,6 @@ brew "bat"                 # Cat with syntax highlighting
 brew "eza"                 # Modern ls replacement
 brew "zoxide"              # Better CD with Z functionality
 brew "pure"                # CLI Prompt
-brew "texlive"             # Latex support
 brew "carapace"            # Completion engine for CLI tools
 
 # Git and Version Control
@@ -38,16 +46,13 @@ brew "delta"               # Git diff pager
 brew "gh"                  # GitHub CLI
 
 # Development Language Managers
-brew "rbenv"               # Ruby version manager
 brew "pipx"                # Python package installer
-brew "postgresql@12"       # PostgreSQL database
 
 # System Information and Monitoring
 brew "neofetch"            # System info display
 brew "btop"                # Modern htop alternative
 
 # Workflow and Productivity Tools
-brew "withgraphite/tap/graphite" # Graphite CLI for Git workflow
 brew "jq"                  # JSON processor
 brew "curl"                # HTTP client
 brew "wget"                # File downloader
@@ -69,8 +74,15 @@ if macos?
 
   # Development Tools (macOS GUI)
   cask "visual-studio-code"       # Alternative editor (optional)
-  cask "cursor"                   # AI IDE
   cask "obsidian"                 # Notes
+
+  #####################################
+  # Work Machine Only
+  #####################################
+  if WORK_MACHINE
+    brew "rbenv"               # Ruby version manager
+    brew "postgresql@12"       # PostgreSQL database
+  end
 end
 
 #####################################
@@ -110,15 +122,3 @@ brew "go"                        # Go programming language
 # vscode "bradlc.vscode-tailwindcss"
 # vscode "esbenp.prettier-vscode"
 
-puts "\n🍺 Brewfile installation complete!"
-puts "📝 Don't forget to:"
-puts "   • Install Zinit for ZSH: Run 'source ~/.zshrc' after setup"
-puts "   • Install Z script manually if needed: curl -fsSL https://raw.githubusercontent.com/rupa/z/master/z.sh > /usr/local/bin/z.sh"
-puts "   • Configure your terminal to use Nerd Fonts"
-puts "   • Run 'rbenv install <version>' to install Ruby versions"
-puts "   • Run 'pipx ensurepath' after pipx installation"
-
-if linux?
-  puts "   • Install terminal emulators manually on Linux:"
-  puts "     - WezTerm: https://wezfurlong.org/wezterm/install/linux.html"
-end
