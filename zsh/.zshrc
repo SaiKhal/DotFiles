@@ -48,6 +48,11 @@ export FZF_ALT_C_COMMAND="fd -t d . $HOME"     # ALT-C directory search
 #            PATH SETUP             #
 #####################################
 
+# Homebrew (Linux)
+if [[ -x /home/linuxbrew/.linuxbrew/bin/brew ]]; then
+    eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+fi
+
 # Ruby version manager - adds rbenv to PATH and initializes it
 export PATH="$HOME/.rbenv/bin:$PATH"
 eval "$(rbenv init -)"
@@ -145,13 +150,3 @@ prompt pure
 
 # Enable ZSH completions system
 autoload -U compinit && compinit
-
-# GT (GraphTerm) tool completions - provides tab completion for gt command
-_gt_yargs_completions() {
-  local reply
-  local si=$IFS
-  IFS=$'\n' reply=($(COMP_CWORD="$((CURRENT-1))" COMP_LINE="$BUFFER" COMP_POINT="$CURSOR" /opt/homebrew/bin/gt --get-yargs-completions "${words[@]}"))
-  IFS=$si
-  _describe 'values' reply
-}
-compdef _gt_yargs_completions gt
