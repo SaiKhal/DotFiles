@@ -1,0 +1,11 @@
+{
+  "enabledPlugins": {
+    "swift-lsp@claude-plugins-official": true
+  },
+  "permissions": {
+	"allow": [
+		"Bash(short *)",
+        "Read(~/Developer/**)",
+	]
+  }
+}

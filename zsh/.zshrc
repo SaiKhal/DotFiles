@@ -75,7 +75,7 @@ fi
 # Mac
 if [[ "$(uname -s)" == "Darwin" ]]; then
   export PATH="/opt/homebrew/opt/postgresql@15/bin:$PATH"
-  export PATH="$PATH:/Users/sai/.local/bin"
+  export PATH="$PATH:$HOME/.local/bin"
 
   export NVM_DIR="$HOME/.nvm"
   [ -s "/opt/homebrew/opt/nvm/nvm.sh" ] && . "/opt/homebrew/opt/nvm/nvm.sh"
@@ -145,21 +145,14 @@ fi
 #         PROMPT CONFIGURATION      #
 #####################################
 
-# Pure prompt - minimal, fast, and customizable ZSH prompt
-autoload -U promptinit; promptinit
-
 # Show command execution time if longer than 3 seconds
 PURE_CMD_MAX_EXEC_TIME=3
 
-# Nord theme colors for Pure prompt
-# zstyle :prompt:pure:path color '#8fbcbb'        # Path color (frost)
-# zstyle :prompt:pure:git:branch color '#d8dee9'  # Git branch (snow storm)
-# zstyle :prompt:pure:git:arrow color '#88c0d0'   # Git arrows (frost)
-# zstyle :prompt:pure:git:stash color '#88c0d0'   # Git stash indicator (frost)
 zstyle :prompt:pure:git:stash show yes          # Show git stash count
 
-# Activate Pure prompt
-prompt pure
+# Load Pure via zinit so it works in all shell types (login and non-login)
+zinit ice lucid
+zinit light sindresorhus/pure
 
 #####################################
 #           COMPLETIONS             #
