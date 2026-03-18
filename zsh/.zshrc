@@ -141,6 +141,11 @@ if command -v tmux >/dev/null 2>&1; then
   alias tm='tmux'
 fi
 
+# Homelab
+if command -v wakeonlan >/dev/null 2>&1; then
+  alias wake-toad='wakeonlan 74:56:3c:bb:d8:9e'  # toad's MAC address (enp8s0)
+fi
+
 #####################################
 #         PROMPT CONFIGURATION      #
 #####################################
