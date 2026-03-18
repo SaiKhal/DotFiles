@@ -72,6 +72,9 @@ if macos?
   cask "font-jetbrains-mono"      # JetBrains programming font
   cask "font-jetbrains-mono-nerd-font" # Nerd Font version
 
+  # Network Tools
+  cask "tailscale"                # VPN / private mesh network
+
   # Development Tools (macOS GUI)
   cask "visual-studio-code"       # Alternative editor (optional)
   cask "obsidian"                 # Notes

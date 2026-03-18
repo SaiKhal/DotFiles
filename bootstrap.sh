@@ -106,7 +106,7 @@ stow_dotfiles() {
     cd "$DOTFILES_DIR"
 
     # List of packages to stow (directories in dotfiles repo)
-    local packages=(zsh nvim tmux claude ghostty wezterm)
+    local packages=(zsh nvim tmux claude ghostty wezterm ssh)
 
     for pkg in "${packages[@]}"; do
         if [[ -d "$pkg" ]]; then

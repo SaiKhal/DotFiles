@@ -5,7 +5,8 @@
   "permissions": {
 	"allow": [
 		"Bash(short *)",
-        "Read(~/Developer/**)",
+        "Bash(ls *)",
+        "Read(~/Developer/**)"
 	]
   }
 }
