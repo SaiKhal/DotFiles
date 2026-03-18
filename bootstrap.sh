@@ -50,7 +50,7 @@ install_homebrew() {
 install_fedora_deps() {
     log_info "Installing Fedora dependencies for Homebrew..."
 
-    sudo dnf groupinstall -y 'Development Tools'
+    sudo dnf install -y gcc gcc-c++ make
     sudo dnf install -y \
         procps-ng \
         curl \
@@ -104,6 +104,11 @@ stow_dotfiles() {
     log_info "Stowing dotfiles..."
 
     cd "$DOTFILES_DIR"
+
+    # Backup existing dotfiles to avoid stow conflicts
+    for f in .zshrc .tmux.conf; do
+        [ -f "$HOME/$f" ] && [ ! -L "$HOME/$f" ] && mv "$HOME/$f" "$HOME/${f}.bak" && log_info "Backed up ~/$f to ~/${f}.bak"
+    done
 
     # List of packages to stow (directories in dotfiles repo)
     local packages=(zsh nvim tmux claude ghostty wezterm ssh)
