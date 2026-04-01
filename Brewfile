@@ -38,9 +38,12 @@ brew "eza"                 # Modern ls replacement
 brew "zoxide"              # Better CD with Z functionality
 brew "pure"                # CLI Prompt
 brew "carapace"            # Completion engine for CLI tools
+cask "ghostty"             # Terminal
 
 # Git and Version Control
 brew "git"                 # Version control
+brew "tig"
+brew "git-spice"
 brew "lazygit"             # Terminal UI for git
 brew "delta"               # Git diff pager
 brew "gh"                  # GitHub CLI
@@ -56,6 +59,16 @@ brew "btop"                # Modern htop alternative
 brew "jq"                  # JSON processor
 brew "curl"                # HTTP client
 brew "wget"                # File downloader
+cask "1password-cli"       # Secrets manager
+
+brew "libyaml"
+brew "aria2"
+brew "xcodes"
+cask "1password"
+cask "fantastical"
+cask "vivaldi"
+cask "claude"
+cask "claude-code"
 
 #####################################
 # macOS-specific Applications
@@ -63,7 +76,6 @@ brew "wget"                # File downloader
 
 if macos?
   # GUI Applications
-  cask "wezterm"                  # GPU-accelerated terminal
   cask "karabiner-elements"       # Keyboard customization
 
   # Fonts

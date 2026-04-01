@@ -3,7 +3,7 @@ Please analyze and fix the Shortcut story: $ARGUMENTS.
 Follow these steps:
 
 1. Use `short story <id>` to get the issue details
-    - Use the Figma API to view any designs. My PAT is stored in the FIGMA_PAT environment variable
+    - Use the Figma CLI to view any designs
 2. Check for existing notes file:
     - Use Glob tool with pattern `<id>*.md` (NOT `**/<id>*.md`) and path `/Users/sai/Library/Mobile Documents/iCloud~md~obsidian/Documents/SecondBrain/Grailed/Tickets`
     - If a file exists, read it and append new findings to it as a running log

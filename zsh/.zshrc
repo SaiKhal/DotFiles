@@ -63,9 +63,7 @@ fi
 # Simple profile hook (work, server, etc.)
 : "${SHELL_PROFILE:=default}"
 
-####################################
-#            PATH / TOOLS          #
-####################################
+
 
 # Homebrew (Linux)
 if [[ -x /home/linuxbrew/.linuxbrew/bin/brew ]]; then
@@ -100,6 +98,12 @@ fi
 if command -v zoxide >/dev/null 2>&1; then
   eval "$(zoxide init zsh)"
 fi
+
+####################################
+#            SECRETS               #
+####################################
+
+export FIGMA_PAT=$(op read "op://Private/Figma CLI/credential")
 
 #####################################
 #             ALIASES               #

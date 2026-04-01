@@ -1,12 +1,15 @@
 {
-  "enabledPlugins": {
-    "swift-lsp@claude-plugins-official": true
-  },
   "permissions": {
-	"allow": [
-		"Bash(short *)",
-        "Bash(ls *)",
-        "Read(~/Developer/**)"
-	]
+    "allow": [
+      "Bash(short *)",
+      "Bash(ls *)",
+      "Read(~/Developer/**)",
+      "Bash(find:~/Developer/**)"
+    ]
+  },
+  "model": "opus",
+  "enabledPlugins": {
+    "swift-lsp@claude-plugins-official": true,
+    "figma@claude-plugins-official": true
   }
 }
