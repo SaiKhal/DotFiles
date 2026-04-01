@@ -72,6 +72,7 @@ fi
 
 # Mac
 if [[ "$(uname -s)" == "Darwin" ]]; then
+  [[ -x /opt/homebrew/bin/brew ]] && eval "$(/opt/homebrew/bin/brew shellenv)"
   export PATH="/opt/homebrew/opt/postgresql@15/bin:$PATH"
   export PATH="$PATH:$HOME/.local/bin"
 
