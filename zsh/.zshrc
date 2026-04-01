@@ -103,7 +103,9 @@ fi
 #            SECRETS               #
 ####################################
 
-export FIGMA_PAT=$(op read "op://Private/Figma CLI/credential")
+if command -v op >/dev/null 2>&1 && op whoami &>/dev/null; then
+  export FIGMA_PAT=$(op read "op://Private/Figma CLI/credential")
+fi
 
 #####################################
 #             ALIASES               #
